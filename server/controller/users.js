@@ -1,5 +1,20 @@
 import Users from "../model/users.js";
 
+export const getAUser = async(req, res) => {
+    const unique_id_pengerima = req.params.id_penerima;
+
+    try {
+        const response = await Users.findOne({
+            where: {
+                unique_id: unique_id_pengerima,
+            }
+        });
+        res.send(response);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const getAllUsers = async(req, res) => {
     try {
         const response = await Users.findAll();
