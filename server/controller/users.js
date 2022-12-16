@@ -1,6 +1,15 @@
 import users from "../model/users.js";
 
-export const postUser = async(req, res) => {
+export const getAllUsers = async(req, res) => {
+    try {
+        const response = await users.findAll();
+        res.send(response);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const createUser = async(req, res) => {
 
     const { username, password, image } = req.body;
     let unique_id_user = Math.floor(100000 + Math.random() * 900000);
