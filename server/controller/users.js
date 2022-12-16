@@ -1,8 +1,8 @@
-import users from "../model/users.js";
+import Users from "../model/users.js";
 
 export const getAllUsers = async(req, res) => {
     try {
-        const response = await users.findAll();
+        const response = await Users.findAll();
         res.send(response);
     } catch (error) {
         console.log(error);
@@ -23,7 +23,7 @@ export const createUser = async(req, res) => {
     };
 
     try {
-        const response = await users.create(user);
+        const response = await Users.create(user);
         res.send(response);
     } catch (error) {
         console.log(error);

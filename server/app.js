@@ -1,4 +1,5 @@
 import express from "express";
+import messageRouter from "./router/message.js";
 
 // controller
 
@@ -9,5 +10,6 @@ const port = 5000;
 
 app.use(express.json());
 app.use(userRouter);
+app.use(messageRouter);
 
 export { app, port };
