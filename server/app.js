@@ -1,11 +1,12 @@
 import express from "express";
 
 // controller
-import { getUsers } from "./controller/users.js";
+import { postUser } from "./controller/users.js";
 
 const app = express();
 const port = 5000;
 
-app.use('/', getUsers);
+app.use(express.json());
+app.use(postUser);
 
 export { app, port };
