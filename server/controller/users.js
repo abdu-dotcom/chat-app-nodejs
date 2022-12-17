@@ -42,7 +42,7 @@ export const loginUser = async(req, res) => {
         });
         // check user
         if (checkUser == undefined) {
-            return res.json({
+            return res.status(403).json({
                 msg: "Sorry, Wrong Username or Password",
                 username: username,
             });
