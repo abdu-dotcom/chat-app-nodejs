@@ -68,6 +68,9 @@ export const loginUser = async(req, res) => {
             path: "/",
             maxAge: 24 * 60 * 60 * 1000,
         });
+        await res.cookie("username", userUsername);
+        await res.cookie("userId", userId);
+
 
         // set status member menjadi Online
         await Users.update({
@@ -82,7 +85,7 @@ export const loginUser = async(req, res) => {
         res.json({
             // accessToken: accessToken,
             refreshTokenChat: refreshTokenChat,
-            status: `berhasil login admin ${username}`,
+            status: `berhasil login admin ${userUsername}`,
         });
 
     } catch (error) {

@@ -5,7 +5,7 @@ export const getMessages = async(req, res) => {
     const { id_pengirim, id_penerima } = req.body;
     try {
         const response = await Massage.findAll({
-            attributes: { exclude: ['message_id', 'id_pengirim', 'id_penerima'] },
+            // attributes: { exclude: ['id_pengirim', 'id_penerima'] },
             order: [
                 ['message_id', 'ASC']
             ],
@@ -22,7 +22,7 @@ export const getMessages = async(req, res) => {
 
             },
         });
-        res.send(response);
+        res.status(200).send(response);
     } catch (error) {
         console.log(error);
     }

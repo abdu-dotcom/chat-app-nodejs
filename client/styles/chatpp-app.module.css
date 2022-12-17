@@ -1,0 +1,58 @@
+.container_chat_app {
+    width: 50%;
+    margin: 0 auto;
+    /* text-align: center; */
+    border: 1px solid black;
+}
+
+.header_text {
+    text-align: center;
+}
+
+.container_feature {
+    display: flex;
+    justify-content: center;
+}
+
+.container_user_chat_app {
+    border: 1px solid black;
+    width: 35%;
+}
+
+.container_feature_chat_app {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 65%;
+    height: 500px;
+    border: 1px solid black;
+}
+
+.container_chat {
+    /* width: 80%; */
+    height: 95%;
+    overflow: scroll;
+}
+
+.container_send {
+    border: 1px solid black;
+    /* margin: 5px 0px 0px 0px; */
+    height: 5%;
+}
+
+.container_form {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input_message {
+    width: 91.2%;
+}
+
+.input_message>input {
+    width: 100%;
+}
+
+.button_submit {
+    width: 8.8%;
+}

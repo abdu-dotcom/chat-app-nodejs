@@ -12,9 +12,6 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  console.log(username);
-  console.log(password);
-  
   const Auth = async(e) =>{
     e.preventDefault();
     try {
@@ -40,10 +37,11 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
+        <div>
         <h1 className={styles.title}>
           Welcome to <span>Chat App</span>
         </h1>
-
+        </div>
         {/* inputan username and password */}
         <form onSubmit={Auth} method="post">
           <input type="text" name="username" id="username" onChange={(e) => setUsername(e.target.value)} />
