@@ -7,15 +7,13 @@ import styles from "../../styles/chatpp-app.module.css";
 
 export default function chatApp() {
     // variable message 
-    const socket = io.connect("http://localhost:5000");
     const [message, setMessage] = useState(""); // menyimpan pesan yang akan dikirim dari tag input
-    const [idPengirim, setIdPengirim] = useState(""); // menyimpan id pengirim dari cookie
-    const [idPenerima, setIdPenerima] = useState(""); // menyimpan id pengirim dari mengklik salah satu list user 
-    const [namaPenerima, setNamaPenerima] = useState(""); // menyimpan id pengirim dari mengklik salah satu list user 
     const [currentUsername, setCurrentUsername] =useState(""); // menyimpan id pengirim dari cookie
+    const [idPengirim, setIdPengirim] = useState(""); // menyimpan id pengirim dari cookie
+    const [namaPenerima, setNamaPenerima] = useState(""); // menyimpan id pengirim dari mengklik salah satu list user 
     const [users, setUsers] = useState([]); // mendapatkan list user
     const [messageUsers, setmessageUsers] = useState([]); // mendapatkan pesan antar user dengan mengirim idPengirim dan idPenerima
-
+    
     useEffect(()=>{
         getUser();  
         setIdPengirim(getCookie("userId"));
@@ -25,16 +23,16 @@ export default function chatApp() {
     // function kirim pesan
     const Send = async(e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post('http://localhost:5000/api/send/message',{
-                id_pengirim: idPengirim,
-                id_penerima: idPenerima,
-                text_Massage: message
-            });
-            console.log(response);
-        } catch (error) {
-            console.log(error);
-        }
+        // try {
+        //     const response = await axios.post('http://localhost:5000/api/send/message',{
+        //         id_pengirim: idPengirim,
+        //         id_penerima: idPenerima,
+        //         text_Massage: message
+        //     });
+        //     console.log(response);
+        // } catch (error) {
+        //     console.log(error);
+        // }
     };
 
     // mendapatkan list user
@@ -86,7 +84,7 @@ export default function chatApp() {
                 {messageUsers.map((message) => {
                     let isCurrentUser = message.id_pengirim == idPengirim;
                     return (
-                        <div style={{textAlign: isCurrentUser ? "right": "left", width: "100%"}}>
+                        <div style={{textAlign: isCurrentUser ? "right": "left", width: "100%"}} key={message.message_id}>
                             <span>{isCurrentUser ? currentUsername: namaPenerima}</span>
                             <li>{message.message}</li>
                         </div>

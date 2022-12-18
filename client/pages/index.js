@@ -1,4 +1,6 @@
 import axios from 'axios';
+// import io from "socket.io-client";
+
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from 'react';
@@ -8,12 +10,15 @@ import styles from "../styles/Home.module.css";
 
 export default function Home() { 
   // variable state
+  // const socket = io("http://localhost:5000");
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
   const Auth = async(e) =>{
     e.preventDefault();
+
     try {
       await axios.post('http://localhost:5000/api/user/login',
       {
@@ -22,6 +27,7 @@ export default function Home() {
       },{
         withCredentials: true
       });
+
       router.push('/chat-app')
     } catch (error) {
       console.log(error);
