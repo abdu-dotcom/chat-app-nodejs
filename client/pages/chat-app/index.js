@@ -6,30 +6,50 @@ import { useEffect, useState } from "react";
 import styles from "../../styles/chatpp-app.module.css";
 
 export default function chatApp() {
-    const socket = io("http://localhost:5000/");
     // variable message 
-    const [message, setMessage] = useState(""); // menyimpan pesan yang akan dikirim dari tag input
-    const [currentUsername, setCurrentUsername] =useState(""); // menyimpan id pengirim dari cookie
-    const [idPengirim, setIdPengirim] = useState(""); // menyimpan id pengirim dari cookie
-    const [namaPenerima, setNamaPenerima] = useState(""); // menyimpan id pengirim dari mengklik salah satu list user 
-    const [users, setUsers] = useState([]); // mendapatkan list user
-    const [messageUsers, setmessageUsers] = useState([]); // mendapatkan pesan antar user dengan mengirim idPengirim dan idPenerima
+    const socket = io("http://localhost:5000");
+    const [listUsers, setListUsers] = useState([]); // mendapatkan list user terdaftar
+    const [currentUsername, setCurrentUsername] =useState([]); // menyimpan id pengirim dari cookie
+    const [currentIdUser, setCurrentIdUser] = useState(""); // menyimpan id pengirim dari cookie
+    const [receiverUsername, setReceiverUsername] = useState(""); // menyimpan nama penerima dari mengklik salah satu list user 
+    const [receiverIdUser, setReceiverIdUser] = useState(""); // menyimpan id pengirim dari mengklik salah satu list user 
+    const [testMessage, setTextMessage] = useState(""); // menyimpan pesan yang akan dikirim dari tag input
+    const [messagesBetweenUsers, setMessagesBetweenUsers] = useState([]); // mendapatkan pesan antar user dengan mengirim idPengirim dan idPenerima
+    const [messageList, setMessageList] = useState([]);
+
+    // variable socket message
     
-    // receive message from the server 
- 
+    console.log(messagesBetweenUsers);
 
     useEffect(()=>{
-
         getUser();  
-        setIdPengirim(getCookie("userId"));
+        setCurrentIdUser(getCookie("userId"));
         setCurrentUsername(getCookie("username"));
     },[]);
-    
-    // socket.emit("send message", "Haiii");
 
+    socket.emit("user_connected", currentUsername);
+    
+    socket.once("user_connected", (username) =>{
+        console.log(username);
+    });
+    
+    socket.once("receive_message", (data) =>{
+        setMessagesBetweenUsers((list)=> [...list, data])
+    });
+    
     // function kirim pesan
     const Send = async(e) => {
         e.preventDefault();
+
+        const messageObject = {
+            senderUsername : currentUsername,
+            senderIdUser : currentIdUser,
+            receiverUsername: receiverUsername,
+            receiverIdUser : receiverIdUser,
+            message : testMessage
+        };
+        
+        socket .emit("send_message", messageObject);
         // try {
         //     const response = await axios.post('http://localhost:5000/api/send/message',{
         //         id_pengirim: idPengirim,
@@ -46,22 +66,24 @@ export default function chatApp() {
     const getUser = async() => {
         try {
             const response = await axios.get('http://localhost:5000/api/users');
-            setUsers(response.data);
+            setListUsers(response.data);
         } catch (error) {
             console.log(error);
         }
     };
 
     // mendapatkan chat antar user
-    const getMessage = async(unique_id) => { 
+    const getMessage = async(receiver) => { 
         try {
             const response = await axios.post('http://localhost:5000/api/messages',
             {
-                id_pengirim: idPengirim,
-                id_penerima: unique_id,
+                id_pengirim: currentIdUser,
+                id_penerima: receiver.unique_id,
             });
             // console.log(response.data);
-            setmessageUsers(response.data);
+            setReceiverIdUser(receiver.unique_id);
+            setReceiverUsername(receiver.username);
+            setMessagesBetweenUsers(response.data);
         } catch (error) {
             console.log(error);        
         }
@@ -76,23 +98,20 @@ export default function chatApp() {
         </div>
         <div className={styles.container_feature}>
           <div className={styles.container_user_chat_app}>
-          {users.map((user) => {
+          {listUsers.map((user) => {
             return (
-                <div onClick={() => {
-                    // setIdPenerima(user.unique_id)
-                    setNamaPenerima(user.username)
-                    getMessage(user.unique_id)}} key={user.unique_id}>{user.username}</div>
+                <div onClick={() => {getMessage(user)}} key={user.unique_id}>{user.username}</div>
             )
           })}
           </div>
           <div className={styles.container_feature_chat_app}>
             <div className={styles.container_chat}>
 
-                {messageUsers.map((message) => {
-                    let isCurrentUser = message.id_pengirim == idPengirim;
+                {messagesBetweenUsers.map((message, index) => {
+                    let isCurrentUser = message.id_pengirim == currentIdUser;
                     return (
-                        <div style={{textAlign: isCurrentUser ? "right": "left", width: "100%"}} key={message.message_id}>
-                            <span>{isCurrentUser ? currentUsername: namaPenerima}</span>
+                        <div style={{textAlign: isCurrentUser ? "right": "left", width: "100%"}} key={index}>
+                            <span>{isCurrentUser ? currentUsername: receiverUsername}</span>
                             <li>{message.message}</li>
                         </div>
                     )
@@ -101,8 +120,7 @@ export default function chatApp() {
             <div className={styles.container_send}>
                 <form onSubmit={Send} className={styles.container_form}>
                     <div className={styles.input_message}>
-                    {/* <input type="text" id="id_penerima" onChange={(e)=> setIdPenerima(e.target.value)} hidden/>  */}
-                    <input type="text" id="text_Massage" name="text_Massage" onChange={(e) => setMessage(e.target.value)}/>
+                    <input type="text" id="text_Massage" name="text_Massage" onChange={(e) => setTextMessage(e.target.value)}/>
                     </div>
                     <div className={styles.button_submit}>
                     <button type="submit">kirim</button>
