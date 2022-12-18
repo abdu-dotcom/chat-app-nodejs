@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import styles from "../../styles/chatpp-app.module.css";
 
 export default function chatApp() {
+    const socket = io("http://localhost:5000/");
     // variable message 
     const [message, setMessage] = useState(""); // menyimpan pesan yang akan dikirim dari tag input
     const [currentUsername, setCurrentUsername] =useState(""); // menyimpan id pengirim dari cookie
@@ -14,11 +15,17 @@ export default function chatApp() {
     const [users, setUsers] = useState([]); // mendapatkan list user
     const [messageUsers, setmessageUsers] = useState([]); // mendapatkan pesan antar user dengan mengirim idPengirim dan idPenerima
     
+    // receive message from the server 
+ 
+
     useEffect(()=>{
+
         getUser();  
         setIdPengirim(getCookie("userId"));
         setCurrentUsername(getCookie("username"));
     },[]);
+    
+    // socket.emit("send message", "Haiii");
 
     // function kirim pesan
     const Send = async(e) => {
@@ -72,7 +79,7 @@ export default function chatApp() {
           {users.map((user) => {
             return (
                 <div onClick={() => {
-                    setIdPenerima(user.unique_id)
+                    // setIdPenerima(user.unique_id)
                     setNamaPenerima(user.username)
                     getMessage(user.unique_id)}} key={user.unique_id}>{user.username}</div>
             )
