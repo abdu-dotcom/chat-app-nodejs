@@ -18,7 +18,6 @@ export default function chatApp() {
     const [messageList, setMessageList] = useState([]);
 
     // variable socket message
-    
     console.log(messagesBetweenUsers);
 
     useEffect(()=>{
@@ -50,6 +49,9 @@ export default function chatApp() {
         };
         
         socket .emit("send_message", messageObject);
+        setMessagesBetweenUsers((list)=> [...list, messageObject]);
+        setTextMessage("");
+
         // try {
         //     const response = await axios.post('http://localhost:5000/api/send/message',{
         //         id_pengirim: idPengirim,
@@ -108,10 +110,10 @@ export default function chatApp() {
             <div className={styles.container_chat}>
 
                 {messagesBetweenUsers.map((message, index) => {
-                    let isCurrentUser = message.id_pengirim == currentIdUser;
+                    let isCurrentUser = currentIdUser == message.id_pengirim || currentIdUser === message.senderIdUser;
                     return (
                         <div style={{textAlign: isCurrentUser ? "right": "left", width: "100%"}} key={index}>
-                            <span>{isCurrentUser ? currentUsername: receiverUsername}</span>
+                            <span>{isCurrentUser ?  currentUsername: receiverUsername}</span>
                             <li>{message.message}</li>
                         </div>
                     )
@@ -120,7 +122,7 @@ export default function chatApp() {
             <div className={styles.container_send}>
                 <form onSubmit={Send} className={styles.container_form}>
                     <div className={styles.input_message}>
-                    <input type="text" id="text_Massage" name="text_Massage" onChange={(e) => setTextMessage(e.target.value)}/>
+                    <input type="text" id="text_Massage" name="text_Massage" value={testMessage}onChange={(e) => setTextMessage(e.target.value)}/>
                     </div>
                     <div className={styles.button_submit}>
                     <button type="submit">kirim</button>

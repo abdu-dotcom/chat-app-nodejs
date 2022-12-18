@@ -19,7 +19,6 @@ export const getMessages = async(req, res) => {
                         id_pengirim: id_penerima,
                     },
                 ],
-
             },
         });
         res.status(200).send(response);
