@@ -26,7 +26,6 @@ try {
 // menghubungi socket.io
 io.on("connection", (socket) => {
     //  ...
-    console.log(`New WS connection: ` + socket.id);
 
     // attach incoming listener for new user
     socket.on("user_connected", (username) => {
