@@ -14,11 +14,11 @@ export default function chatApp() {
     const [receiverUsername, setReceiverUsername] = useState(""); // menyimpan nama penerima dari mengklik salah satu list user 
     const [receiverIdUser, setReceiverIdUser] = useState(""); // menyimpan id pengirim dari mengklik salah satu list user 
     const [testMessage, setTextMessage] = useState(""); // menyimpan pesan yang akan dikirim dari tag input
-    const [messagesBetweenUsers, setMessagesBetweenUsers] = useState([]); // mendapatkan pesan antar user dengan mengirim idPengirim dan idPenerima
+    const [messagesListBetweenUsers, setMessagesListBetweenUsers] = useState([]); // mendapatkan pesan antar user dengan mengirim idPengirim dan idPenerima
     const [messageList, setMessageList] = useState([]);
 
     // variable socket message
-    console.log(messagesBetweenUsers);
+    console.log(messagesListBetweenUsers);
 
     useEffect(()=>{
         getUser();  
@@ -33,7 +33,7 @@ export default function chatApp() {
     });
     
     socket.once("receive_message", (data) =>{
-        setMessagesBetweenUsers((list)=> [...list, data])
+        setMessagesListBetweenUsers((list)=> [...list, data])
     });
     
     // function kirim pesan
@@ -49,19 +49,19 @@ export default function chatApp() {
         };
         
         socket .emit("send_message", messageObject);
-        setMessagesBetweenUsers((list)=> [...list, messageObject]);
+        setMessagesListBetweenUsers((list)=> [...list, messageObject]);
         setTextMessage("");
 
-        // try {
-        //     const response = await axios.post('http://localhost:5000/api/send/message',{
-        //         id_pengirim: idPengirim,
-        //         id_penerima: idPenerima,
-        //         text_Massage: message
-        //     });
-        //     console.log(response);
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        try {
+            const response = await axios.post('http://localhost:5000/api/send/message',{
+                id_pengirim: messageObject.senderIdUser,
+                id_penerima: messageObject.receiverIdUser,
+                text_Massage: messageObject.message
+            });
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     // mendapatkan list user
@@ -85,7 +85,7 @@ export default function chatApp() {
             // console.log(response.data);
             setReceiverIdUser(receiver.unique_id);
             setReceiverUsername(receiver.username);
-            setMessagesBetweenUsers(response.data);
+            setMessagesListBetweenUsers(response.data);
         } catch (error) {
             console.log(error);        
         }
@@ -109,7 +109,7 @@ export default function chatApp() {
           <div className={styles.container_feature_chat_app}>
             <div className={styles.container_chat}>
 
-                {messagesBetweenUsers.map((message, index) => {
+                {messagesListBetweenUsers.map((message, index) => {
                     let isCurrentUser = currentIdUser == message.id_pengirim || currentIdUser === message.senderIdUser;
                     return (
                         <div style={{textAlign: isCurrentUser ? "right": "left", width: "100%"}} key={index}>
