@@ -47,20 +47,23 @@ export default function chatApp() {
             receiverIdUser : receiverIdUser,
             message : testMessage
         };
-        
-        socket .emit("send_message", messageObject);
-        setMessagesListBetweenUsers((list)=> [...list, messageObject]);
-        setTextMessage("");
-
-        try {
-            const response = await axios.post('http://localhost:5000/api/send/message',{
-                id_pengirim: messageObject.senderIdUser,
-                id_penerima: messageObject.receiverIdUser,
-                text_Massage: messageObject.message
-            });
-            console.log(response);
-        } catch (error) {
-            console.log(error);
+        if (testMessage == "") {
+            return
+        }else{
+            socket .emit("send_message", messageObject);
+            setMessagesListBetweenUsers((list)=> [...list, messageObject]);
+            setTextMessage("");
+    
+            try {
+                const response = await axios.post('http://localhost:5000/api/send/message',{
+                    id_pengirim: messageObject.senderIdUser,
+                    id_penerima: messageObject.receiverIdUser,
+                    text_Massage: messageObject.message
+                });
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
 
