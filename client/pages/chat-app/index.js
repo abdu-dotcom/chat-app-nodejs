@@ -101,9 +101,13 @@ export default function chatApp() {
         <div className={styles.container_feature}>
           <div className={styles.container_user_chat_app}>
           {listUsers.map((user) => {
-            return (
-                <div onClick={() => {getMessage(user)}} key={user.unique_id}>{user.username}</div>
-            )
+            if (user.username == currentUsername) {
+                return
+            }else {
+                return (
+                    <div onClick={() => {getMessage(user)}} key={user.unique_id}>{user.username}</div>
+                )
+            }
           })}
           </div>
           <div className={styles.container_feature_chat_app}>
